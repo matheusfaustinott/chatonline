@@ -1,0 +1,27 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Altura total da viewport */
+    width: 230px; /* Largura fixa do sidebar */
+    position: fixed; /* Fixa o sidebar na posição */
+    left: 1; /* Alinha o sidebar à esquerda */
+    top: 0; /* Alinha o sidebar ao topo */
+    background-color: #f5f5f5; /* Cor de fundo do sidebar */
+   }
+   
+   .header, .boddy, .footer {
+    flex: 1; /* Faz com que cada seção ocupe um espaço igual dentro do container */
+   }
+   
+   .header {
+    flex: 0.1; /* Ocupa 20% do espaço total */
+   }
+   
+   .boddy {
+    flex: 0.8; /* Ocupa 60% do espaço total */
+   }
+   
+   .footer {
+    flex: 0.1; /* Ocupa 20% do espaço total */
+   }
+   

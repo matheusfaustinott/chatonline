@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ModalLogout from './modalLoggout/modalLoggout';
 import './chatSidebarUser.css'; 
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 
 
@@ -24,8 +25,7 @@ const ChatSidebarUser = ({ user }) => {
         </>
       )}
       <div className="logout-button" onClick={handleLogoutClick}>
-        {/* Aqui você pode adicionar um ícone de seta ou texto para indicar que é um botão de logout */}
-        Logout
+        <ExitToAppIcon/>
       </div>
       <ModalLogout isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
