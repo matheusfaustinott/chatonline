@@ -2,9 +2,10 @@ import React from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../servicos/config';
 import ChatSidebarUser from './chatSidebarUser';
-import BoddySide from './boddySide';
-import HeaderSide from './headerSide';
+
 import './sidebar.css';
+import Header from './headerSide';
+import Body from './boddySide';
 
 
 const Sidebar = () => {
@@ -13,10 +14,10 @@ const Sidebar = () => {
  return (
     <div className="chat-container">
       <div className="header">
-        <HeaderSide/>
+        <Header/>
       </div>
       <div className="boddy">
-        <BoddySide/>
+        <Body/>
       </div>
       <div className="footer">
         <ChatSidebarUser user={user} />
