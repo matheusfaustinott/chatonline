@@ -1,51 +1,32 @@
-import React from 'react';
+import React from "react";
+import { db } from "../../servicos/config";
+import { useCollection } from "react-firebase-hooks/firestore";
+
+const getUser = (users, userLogged) =>
+ users?.filter((user) => user !== userLogged?.email)[0];
 
 const SidebarChatsItem = ({ id, users, user, setUserChat, active }) => {
- // Função para lidar com o clique no item do chat
- const handleChatClick = () => {
-    setUserChat({ chatId: id, users });
- };
+  const [getUserItem] = useCollection(
+      db.collection("users").where("email", "==", getUser(users, user))
+  );
 
- // Extrai o nome do usuário atual para exibir corretamente
- const currentUser = users.find(u => u.email === user.email);
- const otherUser = users.find(u => u.email !== user.email);
+ const Avatar = getUserItem?.docs?.[0]?.data();
+ const item = getUser(users, user);
 
- // Estilos inline para o componente
- const chatItemStyle = {
-   padding: '10px',
-   borderBottom: '1px solid #ddd',
-   cursor: 'pointer',
-   backgroundColor: active ? '#f0f0f0' : '#fff',
- };
+ const handleNewChat = () => {
+    const userChat = {
+      chatId: id,
+      name: item.split("@")[0],
+      photoURL: Avatar?.photoURL,
+    };
 
- const userAvatarStyle = {
-   width: '40px',
-   height: '40px',
-   borderRadius: '50%',
-   marginRight: '10px',
- };
-
- const chatInfoStyle = {
-   display: 'flex',
-   flexDirection: 'column',
- };
-
- const userNameStyle = {
-   fontWeight: 'bold',
- };
-
- const lastMessageStyle = {
-   fontSize: '0.8em',
-   color: '#888',
+    setUserChat(userChat);
  };
 
  return (
-    <div style={chatItemStyle} onClick={handleChatClick}>
-      <img src={currentUser.avatar} alt="Avatar do usuário" style={userAvatarStyle} />
-      <div style={chatInfoStyle}>
-        <span style={userNameStyle}>{otherUser.name}</span>
-        <span style={lastMessageStyle}>Última mensagem...</span> {/* Substitua por uma lógica real para exibir a última mensagem */}
-      </div>
+    <div onClick={handleNewChat} className={active}>
+      {Avatar ? <img src={Avatar?.photoURL} alt="User Avatar" /> : <div>No Avatar</div>}
+      <span>{item.split("@")[0]}</span>
     </div>
  );
 };
