@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../../servicos/config";
 import { useCollection } from "react-firebase-hooks/firestore";
@@ -6,46 +6,28 @@ import SidebarChatsItem from "./sidebarItens"
 
 const Body = ({ setUserChat, userChat }) => {
  const [user] = useAuthState(auth);
- const [friendsSnapshot] = useCollection(db.collection("friends").doc(user.email));
- const [chats, setChats] = useState([]);
+ const refChat = db
+ .collection("chats")
+ .where("users", "array-contains", user.email);
 
- useEffect(() => {
-    const fetchChats = async () => {
-      if (friendsSnapshot) {
-        const friendsChatsPromises = friendsSnapshot.docs.map((doc) => {
-          const refChat = db.collection("chats").where("users", "array-contains", doc.data().email);
-          return refChat.get();
-        });
-
-        const friendsChatsSnapshots = await Promise.all(friendsChatsPromises);
-        const friendsChats = friendsChatsSnapshots.flatMap((snapshot) =>
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            users: doc.data().users,
-          }))
-        );
-
-        setChats(friendsChats);
-      }
-    };
-
-    fetchChats();
- }, [friendsSnapshot]);
+ const [chatsSnapshot] = useCollection(refChat);
 
  return (
-    <div>
-      {chats.map((chat, index) => (
+  <div>
+    {chatsSnapshot?.docs.map((item, index) => (
+      <div key={index}>
         <SidebarChatsItem
-          key={index}
-          id={chat.id}
-          users={chat.users}
+          id={item.id}
+          users={item.data().users}
           user={user}
           setUserChat={setUserChat}
-          active={userChat?.chatId === chat.id ? "active" : ""}
+          active={userChat?.chatId === item.id ? "active" : ""}
         />
-      ))}
-    </div>
- );
+        <hr />
+      </div>
+    ))}
+  </div>
+  );
 };
 
 export default Body;

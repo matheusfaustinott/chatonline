@@ -4,19 +4,24 @@ import AddIcon from "@material-ui/icons/Add";
 import * as EmailValidator from "email-validator";
 import { auth, db } from "../../servicos/config";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 const Header = ({ setUserChat }) => {
  const [user] = useAuthState(auth);
  const [open, setOpen] = useState(false);
  const [emailInput, setEmailInput] = useState("");
+ const refChat = db
+    .collection("chats")
+    .where("users", "array-contains", user.email);
+ const [chatsSnapShot] = useCollection(refChat)
 
  const handleClickOpen = () => {
     setOpen(true);
- };
+  };
 
  const handleClose = () => {
     setOpen(false);
- };
+  };
 
  const handleCreateChat = () => {
     if (!EmailValidator.validate(emailInput)) {
@@ -36,6 +41,11 @@ const Header = ({ setUserChat }) => {
       console.error("Error adding friend: ", error);
       alert("Erro ao adicionar amigo. Tente novamente.");
     });
+  };
+ const chatExists = (emailChat) => {
+    return !!chatsSnapShot?.docs.find(
+      (chat) => chat.data().users.find((user) => user === emailChat)?.length > 0
+    );
  };
 
  return (
